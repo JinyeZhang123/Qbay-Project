@@ -35,7 +35,7 @@ We each promise to make our best effort to ensure that the team works together a
 
 Team Member #1:
 
-Name:
+Name: Haoyu Li
 
 Student Number:	
 
