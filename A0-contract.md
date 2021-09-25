@@ -42,10 +42,10 @@ Student Number:
 
 Team Member #2:
 
-Name:
+Name: Yichen Zou
 
 Student Number:	
-
+20173047
 
 Team Member #3:
 
