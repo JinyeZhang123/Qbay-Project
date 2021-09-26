@@ -44,14 +44,13 @@ Team Member #2:
 
 Name: Yichen Zou
 
-Student Number:	
-20173047
+Student Number:	20173047
 
 Team Member #3:
 
-Name:
+Name: Wenxuan Li
 
-Student Number:	
+Student Number:	20109218
 
 
 Team Member #4:
