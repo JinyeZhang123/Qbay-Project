@@ -52,3 +52,15 @@ class Transaction(db.Model):
     product = db.relationship('Product')
     # relate this model back to user
     User_id = db.Column(db.Interger, db.ForeignKey('user.id'))
+
+class Shipment(db.Model):
+    # id of shipment
+    id = db.Column(db.Integer, primary_key=True)
+    # shipment status (prepare/on the way/arrived)
+    status = db.Column(db.String(80), unique=False, nullable=False)
+    # shiipping address
+    address = db.Column(db.String(200), unique=False, nullable=False)
+    # tracking information
+    trackdown = db.Column(db.String(200), unique=False, nullable=False)
+    # relate this model to transaction
+    Shipment_id = db.Column(db.Interger, db.ForeignKey('transaction.id'))
