@@ -64,3 +64,15 @@ class Shipment(db.Model):
     trackdown = db.Column(db.String(200), unique=False, nullable=False)
     # relate this model to transaction
     Shipment_id = db.Column(db.Interger, db.ForeignKey('transaction.id'))
+
+class Product(db.Model):
+    # id of the product
+    id = db.Column(db.Integer, primary_key=True)
+    # product name
+    prodectname = db.Column(db.String(80), unique=True, nullable=False)
+    # price
+    price = db.Column(db.Float)
+    # product description
+    productdescription = db.Column(db.String(9999))
+    # relate this model to trasaction
+    transaction_id = db.Column(db.Interger, db.ForeignKey('transaction.id'))
