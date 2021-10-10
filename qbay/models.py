@@ -1,4 +1,4 @@
-# model 
+# model file 
 
 import re
 
@@ -32,7 +32,20 @@ class User(db.Model):
 
     def __repr__(self):
         return '<User %r>' % self.username
+class Product(db.Model):
+    title = db.Column(
+        db.String(80), unique=True, nullable=False)
+    description = db.Column(
+        db.String(2000), nullable=False)
+    price = db.Column(
+        db.Float, nullable=False)
+    date = db.Column(
+        db.String(80), nullable=False)
+    owner_email = db.Column(db.String(120), nullable=False,
+                            primary_key=True)
 
+    def __repr__(self):
+        return '<Product %r>' % self.title
 
 # create all tables
 db.create_all()
@@ -221,4 +234,119 @@ def update_user_profile(email, name, shipping_address, postal):
         return False
     # commit all changes
     db.session.commit()
+    return True
+
+
+def create_product(title, description, price, date, owner_email):
+    # the title should be alphanumeric-only
+    if title.isnumeric():
+        return False
+    if title.isalpha():
+        return False
+    # space allowed only if it is not as prefix and suffix
+    if title.find(' ') == 0 or title.find(' ') == (len(title) - 1):
+        return False
+    titletrimed = title.replace(' ', '')
+    if any(not c.isalnum() for c in titletrimed):
+        return False
+    # The title of the product is no longer than 80 characters
+    if len(title) > 80:
+        return False
+    # a minimum length of 20 characters and a maximum of 2000 characters
+    if len(description) < 20:
+        return False
+    if len(description) > 2000:
+        return False
+    # Description has to be longer than the product's title
+    if len(description) <= len(title):
+        return False
+    # Price has to be of range [10, 10000]
+    if price < 10:
+        return False
+    if price > 10000:
+        return False
+    # last_modified_date must be after 2021-01-02 and before 2025-01-02
+    if int(date[0:4]) == 2021:
+        if int(date[5:7]) <= 1:
+            if int(date[8:]) <= 2:
+                return False
+    if int(date[0:4]) < 2021:
+        return False
+    if int(date[0:4]) == 2025:
+        if int(date[5:7]) >= 1:
+            if int(date[8:]) >= 2:
+                return False
+    if int(date[0:4]) > 2025:
+        return False
+    # owner_email cannot be empty
+    if not owner_email:
+        return False
+    # A user cannot create products that have the same title
+    existed = Product.query.filter_by(title=title).all()
+    if len(existed) > 0:
+        return False
+
+    # create a new product
+    product = Product(title=title, description=description, price=price, date=date, owner_email=owner_email)
+    # add it to the current database session
+    db.session.add(product)
+    # actually save the product object
+    db.session.commit()
+
+    return True
+
+
+def update_product(title, description, price, owner_email):
+    # R5-1: One can update all attributes of the product, except owner_email and last_modified_date.
+    # R5-2: Price can be only increased but cannot be decreased :)
+    # R5-3: last_modified_date should be updated when the update operation is successful.
+    # R5-4: When updating an attribute, one has to make sure that it follows the same requirements as above.
+    # search the Product by owner email
+    x = Product.query.filter_by(owner_email=owner_email).first()
+    if x:
+        # validate title
+        if not len(title) <= 0:
+            # The title of the product has to be alphanumeric-only
+            if not title.isnumeric() and title.isalpha():
+                return False
+            # space allowed only if it is not as prefix and suffix
+            if title.find(' ') == 0 or title.find(' ') == (len(title) - 1):
+                return False
+            if any(not c.isalnum() for c in title):
+                return False
+            # title exist
+            existed = Product.query.filter_by(title=title).all()
+            if len(existed) > 0:
+                return False
+            # update
+            x.title = title
+
+        # validate description
+        if len(description) > 0:
+            # minimum length of 20 characters and a maximum of 2000 characters
+            if not ((len(description) >= 20) and (len(description) <= 2000)):
+                return False
+            # Description has to be longer than the product's title
+            if len(description) <= len(title):
+                return False
+            # update
+            x.description = description
+
+        # validate price
+        if not price:
+            # Price has to be of range [10, 10000]
+            if not price >= 10 and price <= 10000:
+                return False
+            # Price can be only increased but cannot be decreased
+            if not price > x.price:
+                return False
+            # update
+            x.price = price
+
+        # update last_modified_date with current date
+        last_update_date = datetime.today().strftime('%Y-%m-%d')
+        x.date = last_update_date
+
+        # save all changes
+        db.session.commit()
     return True
