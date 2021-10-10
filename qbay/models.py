@@ -32,6 +32,8 @@ class User(db.Model):
 
     def __repr__(self):
         return '<User %r>' % self.username
+
+
 class Product(db.Model):
     title = db.Column(
         db.String(80), unique=True, nullable=False)
@@ -47,13 +49,14 @@ class Product(db.Model):
     def __repr__(self):
         return '<Product %r>' % self.title
 
+
 # create all tables
 db.create_all()
 
 
-#register function ----------------------------------
+# register function
 def register(name, email, password):
-    '''
+    """
     Register a new user
       Parameters:
         name (string):     user name
@@ -61,7 +64,7 @@ def register(name, email, password):
         password (string): user password
       Returns:
         True if registration succeeded otherwise False
-    '''
+    """
     # R1-1: Both the email and password cannot be empty.
     # if empty input
     if len(email) == 0 or len(password) == 0:
@@ -111,19 +114,19 @@ def register(name, email, password):
 
     return True
 
-#-------------
-#login-related
+
+# login-related
 
 
 def login(email, password):
-    '''
+    """
     Check login information
       Parameters:
         email (string):    user email
         password (string): user password
       Returns:
         The user object if login succeeded otherwise None
-    '''
+    """
     # if empty input
     if len(email) == 0 or len(password) == 0:
         return None

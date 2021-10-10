@@ -7,9 +7,9 @@ from qbay.models import register, login, create_product, update_user_profile, up
 
 
 def test_r1_7_user_register():
-    '''
+    """
     Testing R1-7: If the email has been used, the operation failed.
-    '''
+    """
 
     assert register('r17u0', 'r171test0@test.com', '123456Aa*') is True
     assert register('r17u0', 'r172test1@test.com', '123456Aa*') is True
@@ -87,17 +87,16 @@ def test_r1_10_user_register():
     assert (user.balance == k) is True
 
 
-
-#-----------
 # login case
 
+
 def test_r2_1_login():
-    '''
+    """
     Testing R2-1: A user can log in using her/his email address
       and the password.
     (will be tested after the previous test, so we already have u0,
       u1 in database)
-    '''
+    """
     register('r21', 'testr21@test.com', '123456Aa*')
     # correctly logged in
     user = login('testr21@test.com', '123456Aa*')
@@ -156,6 +155,71 @@ def test_r3_updateprofile():
     # user name longer than 20 chars
     twentyoneboy = ''.join((random.choice(string.ascii_lowercase) for x in range(21)))
     assert update_user_profile('123321r31@qq.com', twentyoneboy, 'Ontario55St', 'K7L 5E3') is False
+
+
+def test_r4_1_createproduct():
+    testdescription = 'this is a test string and is more than 20 characters!!!'
+    testprice = 88.8
+    testdate = '2022-01-02'
+
+    # the title should be alphanumeric-only and space allowed only if it is not as prefix and suffix.
+
+    # number only
+    assert create_product('1411', testdescription, testprice, testdate, 'test_r4_1_createproduct1@test.com') is False
+    # character only
+    assert create_product('rinva', testdescription, testprice, testdate, 'test_r4_1_createproduct2@test.com') is False
+    # regular
+    assert create_product('r413', testdescription, testprice, testdate, 'test_r4_1_createproduct3@test.com') is True
+    # space interspersed
+    assert create_product('r4 14', testdescription, testprice, testdate, 'test_r4_1_createproduct4@test.com') is True
+    # space at front
+    assert create_product(' r415', testdescription, testprice, testdate, 'test_r4_1_createproduct5@test.com') is False
+    # space at end
+    assert create_product('r416 ', testdescription, testprice, testdate, 'test_r4_1_createproduct6@test.com') is False
+
+
+def test_r4_2_createprodcut():
+    # generate a string more than 80 chars for invalid title
+    testtitle = ''.join((random.choice(string.ascii_lowercase) for x in range(81)))
+    testdescription = 'this is a test string and is more than 80 characters!!!'
+    testprice = 88.8
+    testdate = '2022-01-02'
+
+    # The title of the product is no longer than 80 characters.
+    assert create_product('r422', testdescription, testprice, testdate, 'test_r4_2_createprodcut1@test.com') is True
+    # insert long title
+    assert create_product(testtitle, testdescription, testprice, testdate, 'test_r4_2_createprodcut2@test.com') is False
+
+
+def test_r4_3_createproduct():
+    testprice = 88.8
+    testdate = '2022-01-02'
+    testdescription = 'abcdabcdabcdabcdacbadeabcedabdebeabdabbdaebdbabeadbb'
+    string1 = ''.join(random.choice(string.ascii_letters) for i in range(2001))
+    # The description of the product can be arbitrary characters, with a minimum length of 20 characters and a maximum
+    # of 2000 characters.
+    assert create_product('abcdr43', testdescription, testprice, testdate, 'test_r4_3_createproduct1@test.com') is True
+    # description less than 20 chars
+    assert create_product('abcdr432', 'desr43', testprice, testdate, 'test_r4_3_createproduct2@test.com') is False
+    # description longer than 2000 chars
+    assert create_product('abcdr433', string1, testprice, testdate, 'test_r4_3_createproduct3@test.com') is False
+
+
+def test_r4_4_createproduct():
+    # normal title
+    testtitle = 'abcdr441'
+    # long title
+    eightyboy = ''.join((random.choice(string.ascii_lowercase) for x in range(80)))
+    # 30 chars description
+    thirtyboy = ''.join((random.choice(string.ascii_lowercase) for x in range(30)))
+    testprice = 88.8
+    testdate = '2022-01-02'
+
+    # Description has to be longer than the product's title.
+    # normal title and description
+    assert create_product(testtitle, thirtyboy, testprice, testdate, 'test_r4_4_createproduct1@test.com') is True
+    # title longer than description
+    assert create_product(eightyboy, thirtyboy, testprice, testdate, 'test_r4_4_createproduct2@test.com') is False
 
 
 def test_r4_5_create_product():
@@ -232,8 +296,10 @@ def test_r4_8_create_product():
                           20,
                           '2021-10-09',
                           'test_r4_8_create_product1redundant@test.com') is False
----------------------------------------------------------
+
+
 # update case
+
 
 def test_r5_1_4_update_product():
     # R5-1: One can update all attributes of the product, except owner_email and last_modified_date
@@ -308,7 +374,3 @@ def test_r5_2_update_product():
                           'test_r5_2_update_product1_description_update1',
                           16,
                           'test_r5_2_update_product1@test.com') is False
-
-
-
-
