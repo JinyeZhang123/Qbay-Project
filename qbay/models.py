@@ -136,3 +136,89 @@ def login(email, password):
     if len(valids) != 1:
         return None
     return valids[0]
+
+
+def update_user_profile(email, name, shipping_address, postal):
+    """
+    R3-1: A user is only able to update his/her user name, shipping_address, and postal_code.
+    R3-2: Shipping_address should be non-empty, alphanumeric-only, and no special characters such as !.
+    R3-3: Postal code has to be a valid Canadian postal code.
+    R3-4: User name follows the requirements above.
+    """
+    # x = User.query.get_or_404(email)
+
+    # search the user by email
+    x = User.query.filter_by(email=email).first()
+    if x:
+        # validate username
+        if not len(name) <= 0:
+            #  alphanumeric-only
+            if re.search("^[a-zA-Z0-9]*$", name) is None:
+                return False
+            # space allowed only if it is not as the prefix or suffix
+            # if name.index(0) == ' ' or name.index(len(name) - 1) == ' ':
+            #     return False
+            if name.find(' ') == 0 or name.find(' ') == (len(name) - 1):
+                return False
+            # User name has to be longer than 2 characters and less than 20 characters
+            if len(name) <= 2 or len(name) >= 20:
+                return False
+            # update
+            x.name = name
+
+        # validate shipping address
+        if shipping_address == '':
+            return False
+        if len(shipping_address) > 0:
+            # shipping address being alphanumeric-only
+            if re.fullmatch("^[a-zA-Z0-9]*$", shipping_address) is None:
+                return False
+            # no special characters
+            regexaddr = re.compile('[@_!#$%^&*()<>?/\|}{~:]')
+            if not regexaddr.search(shipping_address) is None:
+                return False
+            # update
+            x.address = shipping_address
+
+        # validate postal code
+        if not len(postal) <= 0:
+            spaceless = postal.replace(' ', '')
+            # allowed numbers
+            nums = "0123456789"
+            # allowed characters (WZ handled below)
+            alph = "ABCEGHJKLMNPRSTVWXYZ"
+            # index of number
+            mustBeNums = [1, 3, 5]
+            # index of character (WZ handled below)
+            mustBeAlph = [0, 2, 4]
+
+            illegalCharacters = [x for x in spaceless if x not in (nums + alph.lower() + alph + " ")]
+            if illegalCharacters:
+                return False
+            # copy to uppercase list
+            postalCode = [x.upper() for x in spaceless]
+            # length-validation
+            if len(postalCode) != 6:
+                return False
+            # loop over all indexes
+            for idx in range(0, len(postalCode) - 1):
+                ch = postalCode[idx]
+                # is is number, check index
+                if ch in nums and idx not in mustBeNums:
+                    return False
+                # id is character, check index
+                elif ch in alph and idx not in mustBeAlph:
+                    return False
+                # is space in between
+                elif ch == " " and idx != 2:
+                    return False
+            # no W or Z first char
+            if postalCode[0] in "WZ":
+                return False
+            # update
+            x.postcode = postal
+    else:
+        return False
+    # commit all changes
+    db.session.commit()
+    return True

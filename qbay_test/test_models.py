@@ -139,4 +139,23 @@ def test_r2_2_login():
     assert login('r222test@test.com', "Aa111111@") is not None
 
 
+def test_r3_updateprofile():
+    register('Jhon', '123321r31@qq.com', 'Qwert@')
+
+    # A user is only able to update his/her user name, shipping_address, and postal_code
+    assert update_user_profile('123321r31@qq.com', 'Jake', 'Ontario55St', 'K7L 5E3') is True
+    # Shipping_address should be non-empty, alphanumeric-only, and no special characters such as !
+    assert update_user_profile('123321r31@qq.com', 'Jake', '', 'K7L 5E3') is False
+    assert update_user_profile('123321r31@qq.com', 'Jake', 'Ontario55St!!', 'K7L 5E3') is False
+    # Postal code has to be a valid Canadian postal code
+    assert update_user_profile('123321r31@qq.com', 'Jake', 'Ontario55St', 'K7L 2Y1') is True
+    assert update_user_profile('123321r31@qq.com', 'Jake', 'Ontario55St', '0k0 0k0') is False
+    # User name follows the requirements above.
+    # user name less than 2 chars
+    assert update_user_profile('123321r31@qq.com', 'J', 'Ontario55St', 'K7L 5E3') is False
+    # user name longer than 20 chars
+    twentyoneboy = ''.join((random.choice(string.ascii_lowercase) for x in range(21)))
+    assert update_user_profile('123321r31@qq.com', twentyoneboy, 'Ontario55St', 'K7L 5E3') is False
+
+
 
