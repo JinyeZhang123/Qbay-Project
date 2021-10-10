@@ -158,4 +158,157 @@ def test_r3_updateprofile():
     assert update_user_profile('123321r31@qq.com', twentyoneboy, 'Ontario55St', 'K7L 5E3') is False
 
 
+def test_r4_5_create_product():
+    # R4-5: Price has to be of range [10, 10000].
+    # create_product(title, description, price, date, owner_email)
+    assert create_product('testr45createproduct1',
+                          'test_r4_5_create_product1_description',
+                          20,
+                          '2021-10-09',
+                          'test_r4_5_create_product1@test.com') is True
+    # invalid price 9 < 10
+    assert create_product('testr45createproduct1',
+                          'test_r4_5_create_product1_description',
+                          9,
+                          '2021-10-09',
+                          'test_r4_5_create_product1@test.com') is False
+    # invalid price 10001 > 10000
+    assert create_product('testr45createproduct1',
+                          'test_r4_5_create_product1_description',
+                          10001,
+                          '2021-10-09',
+                          'test_r4_5_create_product1@test.com') is False
+
+
+def test_r4_6_create_product():
+    # R4-6: last_modified_date must be after 2021-01-02 and before 2025-01-02
+    # create_product(title, description, price, date, owner_email)
+    assert create_product('testr46createproduct1',
+                          'test_r4_6_create_product1_description',
+                          20,
+                          '2021-10-09',
+                          'test_r4_6_create_product1@test.com') is True
+    # invalid date 2020 before 2021
+    assert create_product('testr46createproduct2',
+                          'test_r4_6_create_product2_description',
+                          20,
+                          '2010-10-09',
+                          'test_r4_6_create_product2@test.com') is False
+    # invalid date 2077 after 2025
+    assert create_product('testr46createproduct3',
+                          'test_r4_6_create_product3_description',
+                          20,
+                          '2077-10-09',
+                          'test_r4_6_create_product3@test.com') is False
+
+
+def test_r4_7_create_product():
+    # R4-7: owner_email cannot be empty. The owner of the corresponding product must exist in the database
+    # create_product(title, description, price, date, owner_email)
+    assert create_product('testr47createproduct1',
+                          'test_r4_7_create_product1_description',
+                          20,
+                          '2021-10-09',
+                          'test_r4_7_create_product1@test.com') is True
+    # empty owner email
+    assert create_product('testr47createproduct2',
+                          'test_r4_7_create_product2_description',
+                          20,
+                          '2021-10-09',
+                          None) is False
+
+
+def test_r4_8_create_product():
+    # R4-8: A user cannot create products that have the same title.
+    # create_product(title, description, price, date, owner_email)
+    assert create_product('testr48createproduct1',
+                          'test_r4_8_create_product1_description',
+                          20,
+                          '2021-10-09',
+                          'test_r4_8_create_product1@test.com') is True
+    # redundant title as above
+    assert create_product('testr48createproduct1',
+                          'test_r4_8_create_product1redundant_description',
+                          20,
+                          '2021-10-09',
+                          'test_r4_8_create_product1redundant@test.com') is False
+---------------------------------------------------------
+# update case
+
+def test_r5_1_4_update_product():
+    # R5-1: One can update all attributes of the product, except owner_email and last_modified_date
+    # R5-4: When updating an attribute, one has to make sure that it follows the same requirements as above
+    # update_product(title, description, price, owner_email)
+
+    # generate a string more than 80 chars for invalid title
+    smallboy = ''.join((random.choice(string.ascii_lowercase) for x in range(81)))
+    # generate a string more than 80 chars (than title) for valid description
+    smallboydes = ''.join((random.choice(string.ascii_lowercase) for x in range(100)))
+    # generate a string more than 200 chars for invalid description
+    longboy = ''.join((random.choice(string.ascii_lowercase) for x in range(2001)))
+
+    # create a product for update
+    # date is set to 2021-10-07 for date update testing
+    create_product('testr51updateproduct1',
+                   'testr51_update_product1_description',
+                   20,
+                   '2021-10-07',
+                   'test_r5_1_update_product1@test.com')
+    # update title, description, price
+    assert update_product('testr51updateproduct1update1',
+                          'test_r5_1_update_product1_description_update1',
+                          36,
+                          'test_r5_1_update_product1@test.com') is True
+    # invalid title with special characters
+    assert update_product('testr51updateproduct1update2!@#$%^&*()-=_+{}:"<>?,./;[]',
+                          'test_r5_1_update_product1_description_update1',
+                          36,
+                          'test_r5_1_update_product1@test.com') is False
+    # invalid title more than 80 char
+    assert update_product(smallboy,
+                          smallboydes,
+                          36,
+                          'test_r5_1_update_product1@test.com') is False
+    # invalid description less than 20 char
+    assert update_product('updater51',
+                          'update_r512',
+                          36,
+                          'test_r5_1_update_product1@test.com') is False
+    # invalid description more than 2000 char
+    assert update_product('testr51updateproduct1update3',
+                          longboy,
+                          36,
+                          'test_r5_1_update_product1@test.com') is False
+    # invalid description less than title
+    assert update_product('testr51updateproduct1update4',
+                          'update',
+                          36,
+                          'test_r5_1_update_product1@test.com') is False
+
+
+def test_r5_2_update_product():
+    # R5-2: Price can be only increased but cannot be decreased
+    # update_product(title, description, price, owner_email)
+
+    # create a product for update
+    # date is set to 2021-10-07 for date update testing
+
+    create_product('testr52updateproduct1',
+                   'test_r5_2_update_product1_description',
+                   20,
+                   '2021-10-07',
+                   'test_r5_2_update_product1@test.com')
+    # update with valid price more than before
+    assert update_product('testr52updateproduct1update1',
+                          'test_r5_2_update_product1_description_update1',
+                          36,
+                          'test_r5_2_update_product1@test.com') is True
+    # update with invalid price less than before
+    assert update_product('testr52updateproduct1update1',
+                          'test_r5_2_update_product1_description_update1',
+                          16,
+                          'test_r5_2_update_product1@test.com') is False
+
+
+
 
