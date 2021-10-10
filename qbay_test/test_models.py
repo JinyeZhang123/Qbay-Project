@@ -85,3 +85,58 @@ def test_r1_10_user_register():
     register('r110', 'r110test@test.com', '123456Aa*')
     user = login('r110test@test.com', '123456Aa*')
     assert (user.balance == k) is True
+
+
+
+#-----------
+# login case
+
+def test_r2_1_login():
+    '''
+    Testing R2-1: A user can log in using her/his email address
+      and the password.
+    (will be tested after the previous test, so we already have u0,
+      u1 in database)
+    '''
+    register('r21', 'testr21@test.com', '123456Aa*')
+    # correctly logged in
+    user = login('testr21@test.com', '123456Aa*')
+    assert user is not None
+
+    # incorrect password
+    user = login('testr21@test.com', '1234567')
+    assert user is None
+
+
+def test_r2_2_login():
+    # R2-2: The login function should check if the supplied inputs meet
+    # the same email/password requirements as above, before checking the database.
+    register('123h', 'r221test@test.com', '123456Aa!')
+    register('123c', 'r222test@test.com', 'Aa111111@')
+
+    # check email format
+    # invalid email
+    assert login('r221test@@test.com', "123456Aa!") is None
+
+    assert login('', "123456Aa!") is None
+    # invalid but not match
+    assert login('r221testnotmatch@test.com', "123456Aa!") is None
+    # logged in with correct email and password
+    assert login('r221test@test.com', "123456Aa!") is not None
+
+    # check password format
+    # null password
+    assert login('r222test@test.com', "") is None
+    # all capital password
+    assert login('r222test@test.com', "AAAAAAAA") is None
+    # no special char
+    assert login('r222test@test.com', "A1a") is None
+    # lower only
+    assert login('r222test@test.com', "aaaaaaaaaaaa") is None
+    # incorrect password
+    assert login('r222test@test.com', "Aa111111!") is None
+    # successfully logged in
+    assert login('r222test@test.com', "Aa111111@") is not None
+
+
+

@@ -98,3 +98,41 @@ def register(name, email, password):
 
     return True
 
+#-------------
+#login-related
+
+
+def login(email, password):
+    '''
+    Check login information
+      Parameters:
+        email (string):    user email
+        password (string): user password
+      Returns:
+        The user object if login succeeded otherwise None
+    '''
+    # if empty input
+    if len(email) == 0 or len(password) == 0:
+        return None
+    # if not valid email format
+    if re.fullmatch(regex, email) is None:
+        return None
+    # password too short
+    if len(password) < 6:
+        return None
+    # if all lower
+    if password.islower():
+        return None
+    # if all upper
+    if password.isupper():
+        return None
+    # check valid email
+    regexp = re.compile('[^0-9a-zA-Z]+')
+    if regexp.search(password) is None:
+        return None
+
+    # fetch out an entity with matched email and password
+    valids = User.query.filter_by(email=email, password=password).all()
+    if len(valids) != 1:
+        return None
+    return valids[0]
