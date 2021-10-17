@@ -89,7 +89,8 @@ def register(name, email, password):
     if len(name) < 0:
         return False
     # validate name (special chars)
-    # delete all spaces to check special chars only (check prefix or suffix later)
+    # delete all spaces to check special chars only
+    # (check prefix or suffix later)
     nametrimed = name.replace(' ', '')
     if re.search("^[a-zA-Z0-9 ]*$", nametrimed) is None:
         return False
@@ -106,7 +107,8 @@ def register(name, email, password):
         return False
 
     # create a new user
-    user = User(username=name, email=email, password=password, address=None, postcode=None, balance=100.0)
+    user = User(username=name, email=email, password=password,
+                address=None, postcode=None, balance=100.0)
     # add it to the current database session
     db.session.add(user)
     # actually save the user object
@@ -156,8 +158,10 @@ def login(email, password):
 
 def update_user_profile(email, name, shipping_address, postal):
     """
-    R3-1: A user is only able to update his/her user name, shipping_address, and postal_code.
-    R3-2: Shipping_address should be non-empty, alphanumeric-only, and no special characters such as !.
+    R3-1: A user is only able to update his/her user name,
+    shipping_address, and postal_code.
+    R3-2: Shipping_address should be non-empty, alphanumeric-only,
+    and no special characters such as !.
     R3-3: Postal code has to be a valid Canadian postal code.
     R3-4: User name follows the requirements above.
     """
@@ -176,7 +180,8 @@ def update_user_profile(email, name, shipping_address, postal):
             #     return False
             if name.find(' ') == 0 or name.find(' ') == (len(name) - 1):
                 return False
-            # User name has to be longer than 2 characters and less than 20 characters
+            # User name has to be longer than 2
+            # characters and less than 20 characters
             if len(name) <= 2 or len(name) >= 20:
                 return False
             # update
@@ -208,7 +213,8 @@ def update_user_profile(email, name, shipping_address, postal):
             # index of character (WZ handled below)
             mustBeAlph = [0, 2, 4]
 
-            illegalCharacters = [x for x in spaceless if x not in (nums + alph.lower() + alph + " ")]
+            illegalCharacters = [x for x in spaceless if x not in
+                                 (nums + alph.lower() + alph + " ")]
             if illegalCharacters:
                 return False
             # copy to uppercase list
@@ -290,7 +296,8 @@ def create_product(title, description, price, date, owner_email):
         return False
 
     # create a new product
-    product = Product(title=title, description=description, price=price, date=date, owner_email=owner_email)
+    product = Product(title=title, description=description, price=price,
+                      date=date, owner_email=owner_email)
     # add it to the current database session
     db.session.add(product)
     # actually save the product object
@@ -300,10 +307,13 @@ def create_product(title, description, price, date, owner_email):
 
 
 def update_product(title, description, price, owner_email):
-    # R5-1: One can update all attributes of the product, except owner_email and last_modified_date.
+    # R5-1: One can update all attributes of the product,
+    # except owner_email and last_modified_date.
     # R5-2: Price can be only increased but cannot be decreased :)
-    # R5-3: last_modified_date should be updated when the update operation is successful.
-    # R5-4: When updating an attribute, one has to make sure that it follows the same requirements as above.
+    # R5-3: last_modified_date should be updated
+    # when the update operation is successful.
+    # R5-4: When updating an attribute,
+    # one has to make sure that it follows the same requirements as above.
     # search the Product by owner email
     x = Product.query.filter_by(owner_email=owner_email).first()
     if x:
