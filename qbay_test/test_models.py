@@ -336,7 +336,7 @@ def test_r4_8_create_product():
 
 # update case
 
-
+"""
 def test_r5_1_4_update_product():
     # R5-1: One can update all attributes of the product,
     # except owner_email and last_modified_date
@@ -415,3 +415,5 @@ def test_r5_2_update_product():
                           'test_r5_2_update_product1_description_update1',
                           16,
                           'test_r5_2_update_product1@test.com') is False
+
+"""

@@ -1,5 +1,6 @@
 from flask import render_template, request, session, redirect
-from qbay.models import login, User, register
+from qbay.models import login, User, register, Product,\
+    update_product, update_user_profile, create_product
 
 
 from qbay import app
@@ -77,10 +78,8 @@ def home(user):
     # front-end portals
 
     # some fake product data
-    products = [
-        {'name': 'prodcut 1', 'price': 10},
-        {'name': 'prodcut 2', 'price': 20}
-    ]
+    ownerEmail = user.email
+    products = Product.query.filter_by(owner_email=ownerEmail).all()
     return render_template('index.html', user=user, products=products)
 
 
@@ -111,6 +110,86 @@ def register_post():
         return render_template('register.html', message=error_message)
     else:
         return redirect('/login')
+
+
+@app.route('/update_user_profile', methods=['GET'])
+def update_user_profile_get():
+    # templates are stored in the templates folder
+    return render_template('update_user_profile.html', message='')
+
+
+@app.route('/update_user_profile', methods=['POST'])
+def update_user_profile_post():
+    email = request.form.get('email')
+    name = request.form.get('name')
+    address = request.form.get('address')
+    postal = request.form.get('postcode')
+
+    error_message = None
+
+    # use backend api to register the user
+    success = update_user_profile(email, name, address, postal)
+    if not success:
+        error_message = "Update failed."
+    # if there is any error messages when registering new user
+    # at the backend, go back to the register page.
+    if error_message:
+        return render_template('update_user_profile.html',
+                               message=error_message)
+    else:
+        return redirect('/')
+
+
+@app.route('/create_product', methods=['GET'])
+def create_product_get():
+    # templates are stored in the templates folder
+    return render_template('create_product.html', message='')
+
+
+@app.route('/create_product', methods=['POST'])
+def create_product_post():
+    title = request.form.get('title')
+    description = request.form.get('description')
+    price = request.form.get('price')
+    date = request.form.get('date')
+    owner_email = request.form.get('owner_email')
+    error_message = None
+
+    success = create_product(title, description, price, date, owner_email)
+    if not success:
+        error_message = 'Creation Failed'
+    # if there is any error messages when registering new user
+    # at the backend, go back to the register page.
+    if error_message:
+        return render_template('create_product.html', message=error_message)
+    else:
+        return redirect('/')
+
+
+@app.route('/update_product', methods=['GET'])
+def update_product_get():
+    # templates are stored in the templates folder
+    return render_template('update_product.html', message='')
+
+
+@app.route('/update_product', methods=['POST'])
+def update_product_post():
+    # def update_product(title, new_title, description, price):
+    title = request.form.get('title')
+    new_title = request.form.get('new_title')
+    description = request.form.get('description')
+    price = request.form.get('price')
+    error_message = None
+
+    success = update_product(title, new_title, description, price)
+    if not success:
+        error_message = "Product update failed."
+    # if there is any error messages when registering new user
+    # at the backend, go back to the register page.
+    if error_message:
+        return render_template('update_product.html', message=error_message)
+    else:
+        return redirect('/')
 
 
 @app.route('/logout')
