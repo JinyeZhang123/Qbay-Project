@@ -36,15 +36,14 @@ class User(db.Model):
 
 class Product(db.Model):
     title = db.Column(
-        db.String(80), unique=True, nullable=False)
+        db.String(80), unique=True, nullable=False, primary_key=True)
     description = db.Column(
         db.String(2000), nullable=False)
     price = db.Column(
         db.Float, nullable=False)
     date = db.Column(
         db.String(80), nullable=False)
-    owner_email = db.Column(db.String(120), nullable=False,
-                            primary_key=True)
+    owner_email = db.Column(db.String(120), unique=False, nullable=False)
 
     def __repr__(self):
         return '<Product %r>' % self.title
@@ -185,20 +184,23 @@ def update_user_profile(email, name, shipping_address, postal):
             if len(name) <= 2 or len(name) >= 20:
                 return False
             # update
-            x.name = name
+
+            x.username = name
 
         # validate shipping address
         if shipping_address == '':
             return False
         if len(shipping_address) > 0:
+            address_spaceless = shipping_address.replace(' ', '')
             # shipping address being alphanumeric-only
-            if re.fullmatch("^[a-zA-Z0-9]*$", shipping_address) is None:
+            if re.fullmatch("^[a-zA-Z0-9]*$", address_spaceless) is None:
                 return False
             # no special characters
             regexaddr = re.compile('[@_!#$%^&*()<>?/\|}{~:]')
-            if not regexaddr.search(shipping_address) is None:
+            if not regexaddr.search(address_spaceless) is None:
                 return False
             # update
+
             x.address = shipping_address
 
         # validate postal code
@@ -237,6 +239,7 @@ def update_user_profile(email, name, shipping_address, postal):
             # no W or Z first char
             if postalCode[0] in "WZ":
                 return False
+
             # update
             x.postcode = postal
     else:
@@ -248,6 +251,7 @@ def update_user_profile(email, name, shipping_address, postal):
 
 def create_product(title, description, price, date, owner_email):
     # the title should be alphanumeric-only
+
     if title.isnumeric():
         return False
     if title.isalpha():
@@ -270,10 +274,12 @@ def create_product(title, description, price, date, owner_email):
     if len(description) <= len(title):
         return False
     # Price has to be of range [10, 10000]
-    if price < 10:
+
+    if float(price) < 10:
         return False
-    if price > 10000:
+    if float(price) > 10000:
         return False
+
     # last_modified_date must be after 2021-01-02 and before 2025-01-02
     if int(date[0:4]) == 2021:
         if int(date[5:7]) <= 1:
@@ -296,7 +302,7 @@ def create_product(title, description, price, date, owner_email):
         return False
 
     # create a new product
-    product = Product(title=title, description=description, price=price,
+    product = Product(title=title, description=description, price=float(price),
                       date=date, owner_email=owner_email)
     # add it to the current database session
     db.session.add(product)
@@ -306,7 +312,7 @@ def create_product(title, description, price, date, owner_email):
     return True
 
 
-def update_product(title, description, price, owner_email):
+def update_product(title, new_title, description, price):
     # R5-1: One can update all attributes of the product,
     # except owner_email and last_modified_date.
     # R5-2: Price can be only increased but cannot be decreased :)
@@ -315,24 +321,28 @@ def update_product(title, description, price, owner_email):
     # R5-4: When updating an attribute,
     # one has to make sure that it follows the same requirements as above.
     # search the Product by owner email
-    x = Product.query.filter_by(owner_email=owner_email).first()
+    x = Product.query.filter_by(title=title).first()
     if x:
         # validate title
-        if not len(title) <= 0:
+        if not len(new_title) <= 0:
             # The title of the product has to be alphanumeric-only
-            if not title.isnumeric() and title.isalpha():
+            if not new_title.isnumeric() and new_title.isalpha():
+                print("test1")
                 return False
             # space allowed only if it is not as prefix and suffix
-            if title.find(' ') == 0 or title.find(' ') == (len(title) - 1):
+            if new_title.find(' ') == 0 or new_title.find(' ')\
+                    == (len(new_title) - 1):
+                print("test2")
                 return False
-            if any(not c.isalnum() for c in title):
+            if any(not c.isalnum() for c in new_title):
+                print("test3")
                 return False
             # title exist
-            existed = Product.query.filter_by(title=title).all()
+            existed = Product.query.filter_by(title=new_title).all()
             if len(existed) > 0:
                 return False
             # update
-            x.title = title
+            x.title = new_title
 
         # validate description
         if len(description) > 0:
@@ -346,15 +356,16 @@ def update_product(title, description, price, owner_email):
             x.description = description
 
         # validate price
-        if not price:
+        if price:
             # Price has to be of range [10, 10000]
-            if not price >= 10 and price <= 10000:
+            if not float(price) >= 10 and float(price) <= 10000:
                 return False
             # Price can be only increased but cannot be decreased
-            if not price > x.price:
+            if not float(price) > x.price:
                 return False
             # update
-            x.price = price
+
+            x.price = float(price)
 
         # update last_modified_date with current date
         last_update_date = datetime.today().strftime('%Y-%m-%d')
@@ -362,4 +373,6 @@ def update_product(title, description, price, owner_email):
 
         # save all changes
         db.session.commit()
+    else:
+        return False
     return True

@@ -5,9 +5,24 @@
 {% endblock %}
 
 {% block content %}
-<h2 id="welcome-header">Welcome {{ user.name }} !</h2>
+<h2 id="welcome-header">Welcome {{ user.name }} !</h2><a href='/update_user_profile'>update user profile</a></h4>
 
+<h2>user information</h2>
+<h4>name: {{ user.username }} address: {{ user.address }}</h4>
+<h4>postal code: {{ user.postcode }} balance: {{ user.balance }}</h4>
 
+<h2>product information</h2>
+<div id="products">
+    {% for product in products %}
+    <div>
+        <h4>title: {{ product.title }} price: {{ product.price }}  date: {{ product.date }} owner email: {{ product.owner_email }}</h4>
+    </div>
+    {% endfor %}
+</div>
+
+<h4><a href='/create_product'>create product</a></h4>
+<h4><a href='/update_product'>update product information</a></h4>
+<!--
 <h2>Here are all available products</h2>
 
 <div id="products">
@@ -17,6 +32,6 @@
     </div>
     {% endfor %}
 </div>
-
+-->
 <a href='/logout'>logout</a>
 {% endblock %}
