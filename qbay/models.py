@@ -36,7 +36,7 @@ class User(db.Model):
 
 class Product(db.Model):
     title = db.Column(
-        db.String(80), unique=True, nullable=False, primary_key = True)
+        db.String(80), unique=True, nullable=False, primary_key=True)
     description = db.Column(
         db.String(2000), nullable=False)
     price = db.Column(
@@ -299,7 +299,7 @@ def create_product(title, description, price, date, owner_email):
     # A user cannot create products that have the same title
     existed = Product.query.filter_by(title=title).all()
     if len(existed) > 0:
-       return False
+        return False
 
     # create a new product
     product = Product(title=title, description=description, price=float(price),
@@ -330,7 +330,8 @@ def update_product(title, new_title, description, price):
                 print("test1")
                 return False
             # space allowed only if it is not as prefix and suffix
-            if new_title.find(' ') == 0 or new_title.find(' ') == (len(new_title) - 1):
+            if new_title.find(' ') == 0 or new_title.find(' ')\
+                    == (len(new_title) - 1):
                 print("test2")
                 return False
             if any(not c.isalnum() for c in new_title):
@@ -352,8 +353,6 @@ def update_product(title, new_title, description, price):
             if len(description) <= len(title):
                 return False
             # update
-
-
             x.description = description
 
         # validate price
