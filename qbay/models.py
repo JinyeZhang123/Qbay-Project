@@ -175,8 +175,6 @@ def update_user_profile(email, name, shipping_address, postal):
             if re.search("^[a-zA-Z0-9]*$", name) is None:
                 return False
             # space allowed only if it is not as the prefix or suffix
-            # if name.index(0) == ' ' or name.index(len(name) - 1) == ' ':
-            #     return False
             if name.find(' ') == 0 or name.find(' ') == (len(name) - 1):
                 return False
             # User name has to be longer than 2
