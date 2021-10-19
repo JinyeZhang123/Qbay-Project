@@ -188,8 +188,8 @@ def update_user_profile(email, name, shipping_address, postal):
             x.username = name
 
         # validate shipping address
-        #if shipping_address == '':
-        #    return False
+        if shipping_address == '':
+            return False
         if len(shipping_address) > 0:
             address_spaceless = shipping_address.replace(' ', '')
             # shipping address being alphanumeric-only
