@@ -189,10 +189,10 @@ def test_r4_1_createproduct():
                           'test_r4_1_createproduct2@test.com') is False
     # regular
     assert create_product('r413', testdescription, testprice, testdate,
-                          'test_r4_1_createproduct3@test.com') is True
+                          'testr41createproduct3@test.com') is True
     # space interspersed
     assert create_product('r4 14', testdescription, testprice, testdate,
-                          'test_r4_1_createproduct4@test.com') is True
+                          'testr41createproduct4@test.com') is True
     # space at front
     assert create_product(' r415', testdescription, testprice, testdate,
                           'test_r4_1_createproduct5@test.com') is False
@@ -211,7 +211,7 @@ def test_r4_2_createprodcut():
 
     # The title of the product is no longer than 80 characters.
     assert create_product('r422', testdescription, testprice, testdate,
-                          'test_r4_2_createprodcut1@test.com') is True
+                          'testr42createprodcut1@test.com') is True
     # insert long title
     assert create_product(testtitle, testdescription, testprice, testdate,
                           'test_r4_2_createprodcut2@test.com') is False
@@ -226,7 +226,7 @@ def test_r4_3_createproduct():
     # with a minimum length of 20 characters and a maximum
     # of 2000 characters.
     assert create_product('abcdr43', testdescription, testprice, testdate,
-                          'test_r4_3_createproduct1@test.com') is True
+                          'testr43createproduct1@test.com') is True
     # description less than 20 chars
     assert create_product('abcdr432', 'desr43', testprice, testdate,
                           'test_r4_3_createproduct2@test.com') is False
@@ -250,7 +250,7 @@ def test_r4_4_createproduct():
     # Description has to be longer than the product's title.
     # normal title and description
     assert create_product(testtitle, thirtyboy, testprice, testdate,
-                          'test_r4_4_createproduct1@test.com') is True
+                          'testr44createproduct1@test.com') is True
     # title longer than description
     assert create_product(eightyboy, thirtyboy, testprice, testdate,
                           'test_r4_4_createproduct2@test.com') is False
@@ -263,7 +263,7 @@ def test_r4_5_create_product():
                           'test_r4_5_create_product1_description',
                           20,
                           '2021-10-09',
-                          'test_r4_5_create_product1@test.com') is True
+                          'testr45createproduct1@test.com') is True
     # invalid price 9 < 10
     assert create_product('testr45createproduct1',
                           'test_r4_5_create_product1_description',
@@ -285,7 +285,7 @@ def test_r4_6_create_product():
                           'test_r4_6_create_product1_description',
                           20,
                           '2021-10-09',
-                          'test_r4_6_create_product1@test.com') is True
+                          'testr46creatproduct1@test.com') is True
     # invalid date 2020 before 2021
     assert create_product('testr46createproduct2',
                           'test_r4_6_create_product2_description',
@@ -306,15 +306,15 @@ def test_r4_7_create_product():
     # create_product(title, description, price, date, owner_email)
     assert create_product('testr47createproduct1',
                           'test_r4_7_create_product1_description',
-                          20,
+                          200,
                           '2021-10-09',
-                          'test_r4_7_create_product1@test.com') is True
+                          'testr47createproduct1@test.com') is True
     # empty owner email
     assert create_product('testr47createproduct2',
                           'test_r4_7_create_product2_description',
                           20,
                           '2021-10-09',
-                          None) is False
+                          '') is False
 
 
 def test_r4_8_create_product():
@@ -324,7 +324,7 @@ def test_r4_8_create_product():
                           'test_r4_8_create_product1_description',
                           20,
                           '2021-10-09',
-                          'test_r4_8_create_product1@test.com') is True
+                          'testr48createproduct1@test.com') is True
     # redundant title as above
     assert create_product('testr48createproduct1',
                           'test_r4_8_create_product1redundant_description',

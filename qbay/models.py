@@ -292,7 +292,11 @@ def create_product(title, description, price, date, owner_email):
     if int(date[0:4]) > 2025:
         return False
     # owner_email cannot be empty
-    if not owner_email:
+    # if empty input
+    if len(owner_email) == 0:
+        return False
+    # if not valid email format
+    if re.fullmatch(regex, owner_email) is None:
         return False
     # A user cannot create products that have the same title
     existed = Product.query.filter_by(title=title).all()
