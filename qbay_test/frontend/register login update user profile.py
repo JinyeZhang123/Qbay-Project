@@ -1,3 +1,7 @@
+import os;
+
+import time;
+
 class FrontEndHomePageTest(BaseCase):
     def test_register_success_input(self, *_):
         """
@@ -177,8 +181,6 @@ class FrontEndHomePageTest(BaseCase):
         self.assert_element("#message")
         self.assert_text("Registration failed.", "#message")
 
-
-
     def test_register_register_fail_functionality(self, *_):
         # open register page
         self.open(base_url + '/register')
@@ -210,3 +212,245 @@ class FrontEndHomePageTest(BaseCase):
         # test if the page loads correctly
         self.assert_element("#message")
         self.assert_text("Please login", "#message")
+
+# Update user profile input test
+    def test_UpdateUserProfile_success_input(self, *_):
+        self.open(base_url + '/register')  # open register page to create account
+        self.type("#email", "caijixiaomc11@gmail.com")  # type email
+        self.type("#name", "caijixiaomc11")  # type user name
+        self.type("#password", "123456Aa!")  # type password
+        self.type("#password2", "123456Aa!")  # retype password
+        self.click('input[type="submit"]')  # click enter button
+
+        self.open(base_url + '/login')  # open register page to create account
+        self.type("#email", "caijixiaomc11@gmail.com")  # type email
+        self.type("#password", "123456Aa!")  # type password
+        self.click('input[type="submit"]')  # click submit
+        self.open(base_url + '/update_user_profile')  # 模拟click href
+
+        # enter home
+        # enter update user profile
+        self.type("#email", "caijixiaomc11@gmail.com")  # type email
+        self.type("#name", "caijixiaomc11")  # type user name
+        self.type("#address", "58elm")  # type address
+        self.type("#postcode", "K7L 2Y1")  # type postcode
+        self.click('input[type="submit"]')  # click submit
+
+        # test if the page loads correctly
+
+        self.assert_element("#welcome-header")
+        self.assert_text("Welcome caijixiaomc11 !", "#welcome-header")
+
+
+    def test_UpdateUserProfile_fail_email_input(self, *_):
+        self.open(base_url + '/register')  # open register page to create account
+        self.type("#email", "caijixiaomc12@gmail.com")  # type email
+        self.type("#name", "caijixiaomc12")  # type user name
+        self.type("#password", "123456Aa!")  # type password
+        self.type("#password2", "123456Aa!")  # retype password
+        self.click('input[type="submit"]')  # click enter button
+
+        self.open(base_url + '/login')  # open register page to create account
+        self.type("#email", "caijixiaomc12@gmail.com")  # type email
+        self.type("#password", "123456Aa!")  # type password
+        self.click('input[type="submit"]')  # click submit
+        self.open(base_url + '/update_user_profile')  # 模拟click href
+
+        # enter home
+        # enter update user profile
+        self.type("#email", "caijixiaomc12")  # type email
+        self.type("#name", "caijixiaomc12")  # type user name
+        self.type("#address", "58elm")  # type address
+        self.type("#postcode", "K7L 2Y1")  # type postcode
+        self.click('input[type="submit"]')  # click submit
+        # test if the page loads correctly
+        self.assert_element("#message")
+        self.assert_text("Update failed.", "#message")
+
+
+    def test_UpdateUserProfile_fail_username_input(self, *_):
+        self.open(base_url + '/register')  # open register page to create account
+        self.type("#email", "caijixiaomc13@gmail.com")  # type email
+        self.type("#name", "caijixiaomc13")  # type user name
+        self.type("#password", "123456Aa!")  # type password
+        self.type("#password2", "123456Aa!")  # retype password
+        self.click('input[type="submit"]')  # click enter button
+        self.open(base_url + '/login')  # open register page to create account
+        self.type("#email", "caijixiaomc13@gmail.com")  # type email
+        self.type("#password", "123456Aa!")  # type password
+        self.click('input[type="submit"]')  # click submit
+        self.open(base_url + '/update_user_profile')  # 模拟click href
+
+        # enter home
+        """
+        &&&&&&&&&&&&&&&&&&&&&&&&&&&
+        咋click href啊
+        &&&&&&&&&&&&&&&&&&&&&&&&&&&  #Click Update User Profile 
+        """
+        # enter update user profile
+        self.type("#email", "caijixiaomc13@gmail.com")  # type email
+        self.type("#name", "c")  # type user name
+        self.type("#address", "58elm")  # type address
+        self.type("#postcode", "K7L 2Y1")  # type postcode
+        self.click('input[type="submit"]')  # click submit
+        # test if the page loads correctly
+        self.assert_element("#message")
+        self.assert_text("Update failed.", "#message")
+
+
+    def test_UpdateUserProfile_fail_address_input(self, *_):
+        self.open(base_url + '/register')  # open register page to create account
+        self.type("#email", "caijixiaomc14@gmail.com")  # type email
+        self.type("#name", "caijixiaomc14")  # type user name
+        self.type("#password", "123456Aa!")  # type password
+        self.type("#password2", "123456Aa!")  # retype password
+        self.click('input[type="submit"]')  # click enter button
+        self.open(base_url + '/login')  # open register page to create account
+        self.type("#email", "caijixiaomc14@gmail.com")  # type email
+        self.type("#password", "123456Aa!")  # type password
+        self.click('input[type="submit"]')  # click submit
+        self.open(base_url + '/update_user_profile')  # 模拟click href
+
+        # enter home
+        # enter update user profile
+        self.type("#email", "caijixiaomc14@gmail.com")  # type email
+        self.type("#name", "caijixiaomc14")  # type user name
+        self.type("#address", "&^%")  # type address
+        self.type("#postcode", "K7L 2Y1")  # type postcode
+        self.click('input[type="submit"]')  # click submit
+        # test if the page loads correctly
+        self.assert_element("#message")
+        self.assert_text("Update failed.", "#message")
+
+    def test_UpdateUserProfile_fail_postcode_input(self, *_):
+        self.open(base_url + '/register')  # open register page to create account
+        self.type("#email", "caijixiaomc15@gmail.com")  # type email
+        self.type("#name", "caijixiaomc15")  # type user name
+        self.type("#password", "123456Aa!")  # type password
+        self.type("#password2", "123456Aa!")  # retype password
+        self.click('input[type="submit"]')  # click enter button
+        self.open(base_url + '/login')  # open register page to create account
+        self.type("#email", "caijixiaomc15@gmail.com")  # type email
+        self.type("#password", "123456Aa!")  # type password
+        self.click('input[type="submit"]')  # click submit
+        self.open(base_url + '/update_user_profile')  # 模拟click href
+
+        # enter home
+        # enter update user profile
+        self.type("#email", "caijixiaomc15@gmail.com")  # type email
+        self.type("#name", "caijixiaomc15")  # type user name
+        self.type("#address", "58elm")  # type address
+        self.type("#postcode", "lpllp")  # type postcode
+        self.click('input[type="submit"]')  # click submit
+        # test if the page loads correctly
+        self.assert_element("#message")
+        self.assert_text("Update failed.", "#message")
+
+# Update user profile output test
+
+    def test_UpdateUserProfile_success_output(self, *_):
+        self.open(base_url + '/register')  # open register page to create account
+        self.type("#email", "caijixiaomc16@gmail.com")  # type email
+        self.type("#name", "caijixiaomc16")  # type user name
+        self.type("#password", "123456Aa!")  # type password
+        self.type("#password2", "123456Aa!")  # retype password
+        self.click('input[type="submit"]')  # click enter button
+
+        self.open(base_url + '/login')  # open register page to create account
+        self.type("#email", "caijixiaomc16@gmail.com")  # type email
+        self.type("#password", "123456Aa!")  # type password
+        self.click('input[type="submit"]')  # click submit
+        self.open(base_url + '/update_user_profile')  # 模拟click href
+
+        # enter home
+        # enter update user profile
+        self.type("#email", "caijixiaomc16@gmail.com")  # type email
+        self.type("#name", "caijixiaomc16")  # type user name
+        self.type("#address", "58elm")  # type address
+        self.type("#postcode", "K7L 2Y1")  # type postcode
+        self.click('input[type="submit"]')  # click submit
+
+        # test if the page loads correctly
+
+        self.assert_element("#welcome-header")
+        self.assert_text("Welcome caijixiaomc16 !", "#welcome-header")
+
+    def test_UpdateUserProfile_fail_output(self, *_):
+        self.open(base_url + '/register')  # open register page to create account
+        self.type("#email", "caijixiaomc17@gmail.com")  # type email
+        self.type("#name", "caijixiaomc17")  # type user name
+        self.type("#password", "123456Aa!")  # type password
+        self.type("#password2", "123456Aa!")  # retype password
+        self.click('input[type="submit"]')  # click enter button
+        self.open(base_url + '/login')  # open register page to create account
+        self.type("#email", "caijixiaomc17@gmail.com")  # type email
+        self.type("#password", "123456Aa!")  # type password
+        self.click('input[type="submit"]')  # click submit
+        self.open(base_url + '/update_user_profile')  # 模拟click href
+
+        # enter home
+        # enter update user profile
+        self.type("#email", "caijixiaomc17@gmail.com")  # type email
+        self.type("#name", "caijixiaomc17")  # type user name
+        self.type("#address", "58elm")  # type address
+        self.type("#postcode", "lpllp")  # type postcode
+        self.click('input[type="submit"]')  # click submit
+        # test if the page loads correctly
+        self.assert_element("#message")
+        self.assert_text("Update failed.", "#message")
+
+
+# Update User Profile Functionality Test
+
+    def test_UpdateUserProfile_success_functionlity(self, *_):
+
+        self.open(base_url + '/register')  # open register page to create account
+        self.type("#email", "caijixiaomc18@gmail.com")  # type email
+        self.type("#name", "caijixiaomc18")  # type user name
+        self.type("#password", "123456Aa!")  # type password
+        self.type("#password2", "123456Aa!")  # retype password
+        self.click('input[type="submit"]')  # click enter button
+
+        self.open(base_url + '/login')  # open register page to create account
+        self.type("#email", "caijixiaomc18@gmail.com")  # type email
+        self.type("#password", "123456Aa!")  # type password
+        self.click('input[type="submit"]')  # click submit
+        self.open(base_url + '/update_user_profile')  # 模拟click href
+
+        # enter home
+        # enter update user profile
+        self.type("#email", "caijixiaomc18@gmail.com")  # type email
+        self.type("#name", "caijixiaomc18")  # type user name
+        self.type("#address", "58elm")  # type address
+        self.type("#postcode", "K7L 2Y1")  # type postcode
+        self.click('input[type="submit"]')  # click submit
+
+        # test if the page loads correctly
+
+        self.assert_element("#welcome-header")
+        self.assert_text("Welcome caijixiaomc18 !", "#welcome-header")
+
+    def test_UpdateUserProfile_fail_functionality(self, *_):
+        self.open(base_url + '/register')  # open register page to create account
+        self.type("#email", "caijixiaomc19@gmail.com")  # type email
+        self.type("#name", "caijixiaomc19")  # type user name
+        self.type("#password", "123456Aa!")  # type password
+        self.type("#password2", "123456Aa!")  # retype password
+        self.click('input[type="submit"]')  # click enter button
+
+        self.open(base_url + '/login')  # open register page to create account
+        self.type("#email", "caijixiaomc19@gmail.com")  # type email
+        self.type("#password", "123456Aa!")  # type password
+        self.click('input[type="submit"]')  # click submit
+        self.open(base_url + '/update_user_profile')  # 模拟click href
+
+        # enter home
+        # enter update user profile
+        self.type("#email", "caijixiaomc19@gmail.com")  # type email
+        self.type("#name", "caijixiaomc19")  # type user name
+        self.type("#address", "58elm")  # type address
+        self.type("#postcode", "lpllp")  # type postcode
+        self.click('input[type="submit"]')  # click submit
+        # test if the page loads correctly
+        self.assert_element("#message")
+        self.assert_text("Update failed.", "#message")
