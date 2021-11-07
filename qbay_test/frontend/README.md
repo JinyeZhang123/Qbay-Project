@@ -105,3 +105,6 @@ Functionality: update product.
 
 1. Success. All the inputs are valid. Update product successfully.
 2. Fail. Invalid title. Update failed.
+
+
+p.s. We made a mistake that we pushed directly from local main to remote main. However, we created a pull request to merge the branch afterward.
