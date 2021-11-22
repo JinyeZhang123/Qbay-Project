@@ -25,3 +25,7 @@ hs_err_pid*
 # build
 **/.idea
 **/.pytest_cache
+
+.pyre/
+db.sqlite
+mysql_data
