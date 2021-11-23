@@ -1,7 +1,7 @@
 version: "2"
 services:
   qbay-web:
-    image: your_docker_hub_name/your_docker_hub_repo_name:version_info
+    image: teem66elec327/deploy:v2
     depends_on:
       - qbay-db
     links:
