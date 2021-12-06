@@ -311,8 +311,10 @@ def create_product(title, description, price, date, owner_email):
     buyer_email = ""
     flag = 0
     # create a new product
-    product = Product(title=title, description=description, price=float(price),
-                      date=date, owner_email=owner_email, buyer_email=buyer_email, flag=flag)
+    product = Product(title=title, description=description,
+                      price=float(price),
+                      date=date, owner_email=owner_email,
+                      buyer_email=buyer_email, flag=flag)
     # add it to the current database session
     db.session.add(product)
     # actually save the product object

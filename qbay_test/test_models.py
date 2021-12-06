@@ -338,7 +338,7 @@ def check_market():
 
     register('zuihou', 'kyle000@queens.com', '123456aA!')
     login('kyle000@queens.com', '123456aA!')
-    create_product('327final00','thisisthefinalassignmentoof327', 200.1,
+    create_product('327final00', 'thisisthefinalassignmentoof327', 200.1,
                    '2021-10-10', 'kyle000@queens.com')
 
     register('zuihoude', 'kyle001@queens.com', '123456aA!')
@@ -354,6 +354,7 @@ def check_market():
     assert market('327final01', 100, 'kyle000@queens.com') is True
 
 # update case
+
 
 """
 def test_r5_1_4_update_product():
