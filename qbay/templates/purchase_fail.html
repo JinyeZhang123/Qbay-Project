@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<h1>{% block title %}purchase_fail{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<h2> Order information</h2>
+
+
+<h4 id='message'>{{message}}</h4>
+
+<h3><a href='/market'>back to market</a></h3>
+<h3><a href='/'>back to my page</a></h3>
+
+{% endblock %}

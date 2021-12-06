@@ -1,7 +1,6 @@
 from flask import render_template, request, session, redirect
-from qbay.models import login, User, register, Product,\
-    update_product, update_user_profile, create_product
-
+from qbay.models import login, User, register, Product, \
+    update_product, update_user_profile, create_product, market
 
 from qbay import app
 
@@ -35,6 +34,7 @@ def authenticate(inner_function):
         else:
             # else, redirect to the login page
             return redirect('/login')
+        return redirect('/login')
 
     # return the wrapped version of the inner_function:
     return wrapped_inner
@@ -79,8 +79,13 @@ def home(user):
 
     # some fake product data
     ownerEmail = user.email
-    products = Product.query.filter_by(owner_email=ownerEmail).all()
-    return render_template('index.html', user=user, products=products)
+    product_1 = Product.query.filter_by(owner_email=ownerEmail, flag=0).all()
+    product_2 = Product.query.filter_by(owner_email=ownerEmail, flag=1).all()
+    product_3 = Product.query.filter_by(buyer_email=ownerEmail, flag=1).all()
+    return render_template('index.html', user=user,
+                           product1=product_1,
+                           product2=product_2,
+                           product3=product_3)
 
 
 @app.route('/register', methods=['GET'])
@@ -190,6 +195,58 @@ def update_product_post():
         return render_template('update_product.html', message=error_message)
     else:
         return redirect('/')
+
+
+@app.route('/market', methods=['GET'])
+def market_get():
+    email = session['logged_in']
+    user = User.query.filter_by(email=email).one_or_none()
+    product_test = user.email
+    products = Product.query.filter_by(flag=0).all()
+    return render_template('market.html', user=user, products=products,
+                           message='')
+
+
+@app.route('/market', methods=['POST'])
+def market_post():
+    title = request.form.get('title')
+    email = session['logged_in']
+    user = User.query.filter_by(email=email).one_or_none()
+    user_balance = user.balance
+    buy_error_message = None
+    buy_success_message = None
+    success = market(title, user_balance, email)
+    products = Product.query.filter_by(flag=0).all()
+    if not success:
+        buy_error_message = "Purchase failed"
+    else:
+        buy_success_message = "Order has been placed!"
+    # if there is any error messages when registering new user
+    # at the backend, go back to the register page.
+    # render_template('market.html', user=user, products=products,
+    #                 message=buy_error_message)
+    # render_template('market.html', user=user, products=products,
+    #                 message=buy_success_message)
+
+    if buy_error_message:
+        return redirect('/purchase_fail')
+    else:
+        return redirect('/purchase_success')
+
+
+@app.route('/purchase_success', methods=['GET'])
+def success_post():
+    success = 'Order has been placed! check your account'
+    return render_template('purchase_success.html',
+                           message=success)
+
+
+@app.route('/purchase_fail', methods=['GET'])
+def fail_post():
+    # templates are stored in the templates folder
+    fail = 'Purchase failed, check the product title and your balance'
+    return render_template('purchase_fail.html',
+                           message=fail)
 
 
 @app.route('/logout')

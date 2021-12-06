@@ -11,17 +11,46 @@
 <h4>name: {{ user.username }} address: {{ user.address }}</h4>
 <h4>postal code: {{ user.postcode }} balance: {{ user.balance }}</h4>
 
-<h2>product information</h2>
-<div id="products">
-    {% for product in products %}
+<h2>My product information:</h2>
+<h3>Available</h3>
+<div id="product1">
+    {% for product in product1 %}
     <div>
-        <h4>title: {{ product.title }} price: {{ product.price }}  date: {{ product.date }} owner email: {{ product.owner_email }}</h4>
+        <h4>-</h4>
+        <h4>title: {{ product.title }}</h4>
+        <h4>price: {{ product.price }}</h4>
+        <h4>date: {{ product.date }}</h4>
+    </div>
+    {% endfor %}
+</div>
+
+<h3>Sold</h3>
+<div id="product2">
+    {% for product in product2 %}
+    <div>
+        <h4>-</h4>
+        <h4>title: {{ product.title }}</h4>
+        <h4>price: {{ product.price }}</h4>
+        <h4>buyer email: {{ product.buyer_email}}</h4>
+    </div>
+    {% endfor %}
+</div>
+
+<h2>My order:</h2>
+<div id="product3">
+    {% for product in product3 %}
+    <div>
+        <h4>-</h4>
+        <h4>title: {{ product.title }}</h4>
+        <h4>price: {{ product.price }}</h4>
+        <h4>date: {{ product.date}}</h4>
     </div>
     {% endfor %}
 </div>
 
 <h4><a href='/create_product'>create product</a></h4>
 <h4><a href='/update_product'>update product information</a></h4>
+<h4><a href='/market'>market</a></h4>
 <!--
 <h2>Here are all available products</h2>
 
