@@ -1,7 +1,7 @@
 version: "2"
 services:
   qbay-web:
-    image: teem66elec327/deploy:v2
+    image: 1chen/team66a6:v4
     depends_on:
       - qbay-db
     links:
