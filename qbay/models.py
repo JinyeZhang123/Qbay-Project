@@ -43,7 +43,12 @@ class Product(db.Model):
         db.Float, nullable=False)
     date = db.Column(
         db.String(80), nullable=False)
-    owner_email = db.Column(db.String(120), unique=False, nullable=False)
+    owner_email = db.Column(
+        db.String(120), unique=False, nullable=False)
+    buyer_email = db.Column(
+        db.String(120), unique=False, nullable=False)
+    flag = db.Column(
+        db.Integer, nullable=False)
 
     def __repr__(self):
         return '<Product %r>' % self.title
@@ -303,9 +308,11 @@ def create_product(title, description, price, date, owner_email):
     if len(existed) > 0:
         return False
 
+    buyer_email = ""
+    flag = 0
     # create a new product
     product = Product(title=title, description=description, price=float(price),
-                      date=date, owner_email=owner_email)
+                      date=date, owner_email=owner_email, buyer_email=buyer_email, flag=flag)
     # add it to the current database session
     db.session.add(product)
     # actually save the product object
@@ -372,6 +379,29 @@ def update_product(title, new_title, description, price):
         # update last_modified_date with current date
         last_update_date = datetime.today().strftime('%Y-%m-%d')
         x.date = last_update_date
+
+        # save all changes
+        db.session.commit()
+    else:
+        return False
+    return True
+
+
+def market(title, user_balance, buyer_email):
+    x = Product.query.filter_by(title=title).first()
+
+    if x:
+        x.flag = 1
+        x.buyer_email = buyer_email
+        if x.owner_email == buyer_email:
+            return False
+        if x.price > user_balance:
+            return False
+        else:
+            y = User.query.filter_by(email=x.owner_email).first()
+            y.balance = user_balance + x.price
+            z = User.query.filter_by(email=x.buyer_email).first()
+            z.balance = user_balance - x.price
 
         # save all changes
         db.session.commit()

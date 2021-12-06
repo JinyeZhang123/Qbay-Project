@@ -4,7 +4,7 @@ import string
 import re
 
 from qbay.models import register, login, create_product, \
-    update_user_profile, update_product
+    update_user_profile, update_product, market
 
 
 def test_r1_7_user_register():
@@ -333,6 +333,25 @@ def test_r4_8_create_product():
                           'test_r4_8_create_product1redundant\
                           @test.com') is False
 
+
+def check_market():
+
+    register('zuihou', 'kyle000@queens.com', '123456aA!')
+    login('kyle000@queens.com', '123456aA!')
+    create_product('327final00','thisisthefinalassignmentoof327', 200.1,
+                   '2021-10-10', 'kyle000@queens.com')
+
+    register('zuihoude', 'kyle001@queens.com', '123456aA!')
+    login('kyle001@queens.com', '123456aA!')
+    create_product('327final01', 'thisisthsefinalassignmentoof327', 90.1,
+                   '2021-10-10', 'kyle001@queens.com')
+
+    # a seller cannot buy his own product
+    assert market('327final00', 100, 'kyle000@queens.com') is False
+    # a costumer cannot but a product beyond his balance
+    assert market('327final00', 100, 'kyle001@queens.com') is False
+    # success
+    assert market('327final01', 100, 'kyle000@queens.com') is True
 
 # update case
 

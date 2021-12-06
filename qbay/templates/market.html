@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<h1>{% block title %}Market{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<h2 id="welcome-header">Welcome {{ user.username }} !</h2>
+
+<h2>user information</h2>
+<h4>email: {{ user.email }}</h4>
+<h4>balance: {{ user.balance }}</h4>
+
+<h4 id='message'>{{message}}</h4>
+<form method="post">
+  <div class="form-group">
+    <label for="title">Title of the product to purchase</label>
+    <input class="form-control" name="title" id="title" required>
+
+    <input class="btn btn-primary" type="submit" value="place order">
+  </div>
+</form>
+
+
+<h2>available products information</h2>
+<div id="products available">
+    {% for product in products %}
+    <div>
+        <h4>-</h4>
+        <h4>title: {{ product.title }}</h4>
+        <h4>price: {{ product.price }}</h4>
+        <h4>date: {{ product.date }}</h4>
+        <h4>owner email: {{ product.owner_email }}</h4>
+        <h4>description: {{ product.description }} </h4>
+    </div>
+    {% endfor %}
+</div>
+
+<h3><a href='/'>back to my page</a></h3>
+
+<!--
+<h4><a href='/create_product'>create product</a></h4>
+<h4><a href='/update_product'>update product information</a></h4>
+
+<h2>Here are all available products</h2>
+
+<div id="products">
+    {% for product in products %}
+    <div>
+        <h4>name: {{ product.name }} price: {{ product.price }} <a href=''>update</a></h4>
+    </div>
+    {% endfor %}
+</div>
+-->
+<a href='/logout'>logout</a>
+{% endblock %}
